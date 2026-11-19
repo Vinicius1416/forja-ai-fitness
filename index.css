@@ -1,0 +1,199 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Base escura derivada de paleta grafite + acento menta */
+    --background: 240 7% 4%;
+    --foreground: 60 3% 94%;
+    --card: 240 6% 7%;
+    --card-foreground: 60 3% 94%;
+    --popover: 240 7% 6%;
+    --popover-foreground: 60 3% 94%;
+    --primary: 164 100% 43%;
+    --primary-foreground: 240 25% 5%;
+    --secondary: 240 5% 12%;
+    --secondary-foreground: 60 3% 94%;
+    --muted: 240 5% 12%;
+    --muted-foreground: 240 4% 62%;
+    --accent: 163 45% 13%;
+    --accent-foreground: 162 90% 72%;
+    --destructive: 8 78% 56%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5% 14%;
+    --input: 240 5% 16%;
+    --ring: 164 100% 43%;
+    --radius: 0.75rem;
+    --sidebar-background: 240 7% 5%;
+    --sidebar-foreground: 60 3% 94%;
+    --sidebar-primary: 164 100% 43%;
+    --sidebar-primary-foreground: 240 25% 5%;
+    --sidebar-accent: 240 5% 11%;
+    --sidebar-accent-foreground: 60 3% 94%;
+    --sidebar-border: 240 5% 12%;
+    --sidebar-ring: 164 100% 43%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-feature-settings: 'ss01', 'cv11';
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  .font-display {
+    font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+    letter-spacing: -0.02em;
+  }
+  ::selection {
+    background: hsl(var(--primary) / 0.35);
+    color: hsl(var(--foreground));
+  }
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring) / 0.7);
+    outline-offset: 2px;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(240 5% 18%);
+    border-radius: 8px;
+    border: 2px solid hsl(var(--background));
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(240 5% 26%);
+  }
+}
+
+@layer components {
+  /* Label micro em caixa alta, com tracking largo — hierarquia estilo arena */
+  .label-caps {
+    @apply text-[11px] font-semibold uppercase tracking-[0.18em];
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Número grande estilo placar */
+  .stat-numeral {
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.03em;
+  }
+
+  /* Vidro — navegação e pills flutuantes */
+  .glass {
+    background: hsl(0 0% 80% / 0.06);
+    backdrop-filter: blur(12px) saturate(160%);
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
+    border: 1px solid hsl(0 0% 80% / 0.1);
+  }
+
+  /* Anel de holograma usado atrás do mascote (e como pôster de fallback) */
+  .holo-ring {
+    background:
+      repeating-linear-gradient(
+        0deg,
+        hsl(var(--primary) / 0.05) 0 1px,
+        transparent 1px 56px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        hsl(var(--primary) / 0.05) 0 1px,
+        transparent 1px 56px
+      ),
+      radial-gradient(
+        ellipse 60% 45% at 50% 58%,
+        hsl(var(--primary) / 0.22) 0%,
+        transparent 68%
+      );
+  }
+
+  /* Marquee — faixa de texto rolante */
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee var(--marquee-duration, 22s) linear infinite;
+  }
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  /* Revelação de caracteres — cada letra sobe com stagger controlado por --char-index */
+  .char-reveal {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+  }
+  .char-reveal > span {
+    display: inline-block;
+    transform: translateY(110%);
+    opacity: 0;
+    animation: char-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation-delay: calc(var(--char-index, 0) * 28ms);
+  }
+  @keyframes char-rise {
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  .entrance {
+    animation: entrance 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(var(--stagger, 0) * 60ms);
+  }
+  @keyframes entrance {
+    from {
+      opacity: 0;
+      transform: translateY(14px) scale(0.97);
+      filter: blur(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track,
+  .char-reveal > span,
+  .entrance {
+    animation: none !important;
+  }
+  .char-reveal > span {
+    transform: none;
+    opacity: 1;
+  }
+  .entrance {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+  * {
+    scroll-behavior: auto !important;
+  }
+}
